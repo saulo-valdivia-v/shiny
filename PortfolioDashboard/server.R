@@ -19,10 +19,9 @@ shinyServer(function(input, output) {
     
     output$plot <- renderPlotly({
         
-        
         AMD <- getSymbols(input$Id085,
-                          from = "2016/12/31",
-                          to = "2018/12/31",
+                          from = input$dates[1],
+                          to = input$dates[2],
                           periodicity = "daily",
                           auto.assign = FALSE)
         index(AMD)
@@ -40,42 +39,56 @@ shinyServer(function(input, output) {
         fig
     })
     
+    observe({
+        print(input$dates[1])
+    })
+    
     output$table <- renderDataTable({
-        ts <- read.csv("~/DataScience/EAE/Visualization2/Clase1/StockTest1/data/Transactions.csv")
+        ts <- read.csv("data/Transactions.csv")
+        ts$Date <- as.Date(ts$Date, "%m/%d/%Y")
         
-        ts <- ts %>% dplyr::filter(Security == input$Id085)
+        ts <- ts %>% dplyr::filter(Security == input$Id085 & Date > input$dates[1] & Date < input$dates[2])
         
         ts
     })
     
     output$stockName <- renderText({
-        'Coca-Cola Co.'
+        ps <- read.csv("data/Positions.csv")
+        ps <- ps %>% dplyr::filter(Tickers == input$Id085)
+        
+        test <- unique(ps['TickerName'])
+        M <- unlist(ps['TickerName'])
+        M
+        #'Coca-Cola Co.'
     })
     output$stockId <- renderText({
-        '(KO)'
+        paste('(', input$Id085, ')')
+        #'(KO)'
     })
     output$stockPrice <- renderUI({
+        metrics <- yahooQF(c("Last Trade (Price Only)",
+                             "Change","Change in Percent",
+                             "Open", "Days High", "Days Low", "Volume"))
+        symbols <- c(input$Id085)
+        Target_Price_1yr <- getQuote(paste(symbols, sep="", collapse=";"), src = "yahoo", what=metrics)
+        
+        arrowUrl <- "https://upload.wikimedia.org/wikipedia/commons/b/b0/Down_red_arrow.png"
+        
+        if (Target_Price_1yr['Last'] > Target_Price_1yr['Open']) {
+            arrowUrl <- "https://upload.wikimedia.org/wikipedia/commons/3/36/Up_green_arrow.png"
+        }
+        
         tags$div(
-            "50",
-            #tags$img(src = "https://upload.wikimedia.org/wikipedia/commons/3/36/Up_green_arrow.png", width = "30px", height = "30px")
-            tags$img(src = "https://upload.wikimedia.org/wikipedia/commons/b/b0/Down_red_arrow.png", width = "30px", height = "30px")
+            Target_Price_1yr['Last'],
+            tags$img(src = arrowUrl, width = "30px", height = "30px")
         )
     })
     output$stockPrices <- renderUI({
-        AAPL <- getSymbols("AAPL",
-                           from = "2016/12/31",
-                           to = "2018/12/31",
-                           periodicity = "daily",
-                           auto.assign = FALSE)
-        
-        names(AAPL)[names(AAPL) == "AAPL.Open"] <- "Open"
-        names(AAPL)[names(AAPL) == "AAPL.Close"] <- "Close"
-        names(AAPL)[names(AAPL) == "AAPL.High"] <- "High"
-        names(AAPL)[names(AAPL) == "AAPL.Low"] <- "Low"
-        names(AAPL)[names(AAPL) == "AAPL.Volume"] <- "Volume"
-        names(AAPL)[names(AAPL) == "AAPL.Adjusted"] <- "Adjusted"
-        
-        #AAPL[1,c("Open","Close","High", "Low", "Adjusted")]
+        metrics <- yahooQF(c("Last Trade (Price Only)",
+                             "Change","Change in Percent",
+                             "Open", "Days High", "Days Low", "Volume"))
+        symbols <- c(input$Id085)
+        Target_Price_1yr <- getQuote(paste(symbols, sep="", collapse=";"), src = "yahoo", what=metrics)
         
         tags$table(
             tags$tr(
@@ -85,31 +98,36 @@ shinyServer(function(input, output) {
                 tags$th("Low")
             ),
             tags$tr(
-                tags$td(AAPL[1, "Open"]),
-                tags$td(AAPL[1, "Close"]),
-                tags$td(AAPL[1, "High"]),
-                tags$td(AAPL[1, "Low"])
+                tags$td(Target_Price_1yr['Open']),
+                tags$td(Target_Price_1yr['Last']),
+                tags$td(Target_Price_1yr['High']),
+                tags$td(Target_Price_1yr['Low'])
             )
         )
     })
     
     output$pTest <- renderUI({
+        ps <- read.csv("data/Positions.csv")
+        
+        ps <- ps %>% dplyr::filter(Tickers == input$Id085)
+        
+        
         tags$table(
             tags$tr(
                 tags$th("Shares Owned:"),
-                tags$td("340")
+                tags$td(ps['Shares'])
             ),
             tags$tr(
                 tags$th("Total Cost:"),
-                tags$td("1230$")
+                tags$td(paste(round(ps['Cost'], 2), '$'))
+            ),
+            tags$tr(
+                tags$th("Total Value:"),
+                tags$td(paste(round(ps['Value'], 2), '$'))
             ),
             tags$tr(
                 tags$th("Total Gain:"),
-                tags$td("500$")
-            ),
-            tags$tr(
-                tags$th("Average Share Cost:"),
-                tags$td("60$")
+                tags$td(paste(round(ps['Gain...1'], 2), '$'))
             )
         )
     })

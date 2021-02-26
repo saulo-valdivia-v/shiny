@@ -103,7 +103,7 @@ shinyUI(dashboardPage(
                         pickerInput(
                             inputId = "Id085",
                             label = "Lista de Titulos",
-                            choices = c('AMD', 'INTC'),
+                            choices = unique(dataP$Tickers),
                             options = list(size = 5)
                         ),
                     ),
