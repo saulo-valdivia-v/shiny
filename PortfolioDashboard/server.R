@@ -12,8 +12,13 @@ shinyServer(function(input, output) {
     })
     
     getStockTransactionsData <- reactive({
+        input$generar
+        
+        inicio_periodo = isolate(input$dates[1])
+        fin_periodo = isolate(input$dates[2])
+        
         ts <- cbind(dataTransactions)
-        ts <- ts %>% dplyr::filter(Security == input$stockPicker & Date > input$dates[1] & Date < input$dates[2])
+        ts <- ts %>% dplyr::filter(Security == input$stockPicker & Date > inicio_periodo & Date < fin_periodo)
         ts
     })
     
@@ -26,9 +31,14 @@ shinyServer(function(input, output) {
     })
     
     getStockMarketData <-reactive({
+        input$generar
+        
+        inicio_periodo = isolate(input$dates[1])
+        fin_periodo = isolate(input$dates[2])
+        
         marketData <- getSymbols(input$stockPicker,
-                          from = input$dates[1],
-                          to = input$dates[2],
+                          from = inicio_periodo,
+                          to = fin_periodo,
                           periodicity = "daily",
                           auto.assign = FALSE)
         

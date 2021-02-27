@@ -2,21 +2,16 @@ shinyUI(dashboardPage(
     dashboardHeader(title = "RobinGood"),
     dashboardSidebar(
         sidebarMenu(
-        menuItem('Inicio', tabName = 'intro', icon = icon('home')),
+        menuItem('Home', tabName = 'intro', icon = icon('home')),
         menuItem(
-            'Portafolio',
+            'Portfolio',
             tabName = 'info',
             icon = icon('chart-line')
         ),
         menuItem(
-            'Info por Accion',
+            'Stocks Information',
             tabName = 'stock',
             icon = icon('chart-bar')
-        ),
-        menuItem(
-            'contáctanos',
-            tabName = 'about',
-            icon = icon('question')
         )
     )),
     dashboardBody(tabItems(
@@ -33,7 +28,7 @@ shinyUI(dashboardPage(
                             12,
                             infoBox(
                                 "Account Value",
-                                paste0("$", '148,522'),
+                                paste0("$", Account_value),
                                 icon = icon('globe'),
                                 width = 10,
                                 color = 'olive',
@@ -44,7 +39,7 @@ shinyUI(dashboardPage(
                             12,
                             infoBox(
                                 "Total Cost",
-                                paste0("$", '122,876'),
+                                paste0("$", Total_Cost),
                                 icon = icon('wallet'),
                                 width = 10,
                                 color = 'blue',
@@ -54,8 +49,8 @@ shinyUI(dashboardPage(
                         column(
                             12,
                             infoBox(
-                                "Gains",
-                                paste0("$", "25,646"),
+                                "Total Return",
+                                paste0("$", Gains),
                                 icon = icon('money-bill'),
                                 width = 10,
                                 color = 'green',
@@ -65,8 +60,8 @@ shinyUI(dashboardPage(
                         column(
                             12,
                             infoBox(
-                                "Shared Owned",
-                                '1,341',
+                                "Shares Owned",
+                                Shared_Owned,
                                 icon = icon('list-alt'),
                                 width = 10,
                                 color = 'navy',
@@ -85,7 +80,7 @@ shinyUI(dashboardPage(
                         tabBox(
                             id = 'tabset1',
                             width = 12,
-                            tabPanel('Distribution',h4 ("Quantity Shares acquired by the Company",align = "center", style ="font-weight:bold"), plotlyOutput("distributionPlot")),
+                            tabPanel('Distribution',h4 ("Quantity Shares acquired by Company",align = "center", style ="font-weight:bold"), plotlyOutput("distributionPlot")),
                             tabPanel('Performance', h4 ("Performance by Company", align = "center", style ="font-weight:bold"), plotlyOutput("performancePlot"))
                         )
                     )
@@ -99,7 +94,7 @@ shinyUI(dashboardPage(
                         width = 13,
                         pickerInput(
                             inputId = "stockPicker",
-                            label = "Lista de Titulos",
+                            label = "Securities",
                             choices = unique(dataP$Tickers),
                             options = list(size = 5)
                         ),
@@ -137,10 +132,13 @@ shinyUI(dashboardPage(
                                          "Rango de Fechas",
                                          min('2020-01-01'),
                                          max('2022-01-01')
-                                     )
+                                     ),
+                                     actionButton('generar', 'Update')
                                  ),
                                  column(2)),
+                        shinycssloaders::withSpinner(
                         plotlyOutput("stockMarketPlot", height = 250)
+                        )
                     ),
                     box(
                         title = "Transactions",
@@ -148,7 +146,9 @@ shinyUI(dashboardPage(
                         solidHeader = TRUE,
                         collapsible = TRUE,
                         width = 20,
+                        shinycssloaders::withSpinner(
                         dataTableOutput("stockTransactionsTable")
+                        )
                     ))
                 ))
     ))
