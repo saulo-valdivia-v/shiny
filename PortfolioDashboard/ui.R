@@ -22,7 +22,7 @@ shinyUI(dashboardPage(
     dashboardBody(tabItems(
         tabItem(tabName = 'intro',
                 # h1('Aqui ira mi intro')
-                includeCSS('www/html/dist/css/style.css'),
+                includeCSS('www/html/css/style.css'),
                 includeHTML('www/html/intro.html')
                 
         ),
@@ -79,17 +79,19 @@ shinyUI(dashboardPage(
                 column(
                     8,
                     box(
-                        status = 'danger',
+                        #status = 'danger',
                         solidHeader = TRUE,
                         width = 12 ,
+                        height= 550,
                         collapsible = FALSE,
                         collapsed = FALSE,
                         tabBox(
                             id = 'tabset1',
                             height = "250px",
-                            tabPanel('Distribucion', textOutput("moncher")),
-                            tabPanel('Magic', textOutput('lol')),
-                            tabPanel('Desempeno', plotOutput("bar"))
+                            width = 12,
+                            tabPanel('Distribution',h4 ("Quantity Shares acquired by the Company",align = "center", style ="font-weight:bold"), plotlyOutput("just")),
+                            #tabPanel('Magic', textOutput('lol')),
+                            tabPanel('Performance', h4 ("Performance by Company", align = "center", style ="font-weight:bold"), plotlyOutput("bar"))
                         )
                     )
                 ))),
@@ -153,7 +155,12 @@ shinyUI(dashboardPage(
                         width = 20,
                         dataTableOutput("table")
                     ))
-                ))
+                )),
+        tabItem(tabName = 'about',
+                #h1('Aqui ira mi intro')
+                includeCSS('www/html/css/form.css'),
+                includeHTML('www/html/formpage.html')
+        )
         
     ))
 ))

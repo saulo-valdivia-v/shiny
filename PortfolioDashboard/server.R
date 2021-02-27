@@ -131,4 +131,19 @@ shinyServer(function(input, output) {
             )
         )
     })
+    
+    output$just <- renderPlotly({
+        orden <- c('AMD','AKAM','APH','CSCO','INTC','IBM','INTU','IPGP','BAX','GILD','HCA','HSIC','PFE','C','CFG','GS','HIG','HBAN','JPM','KEY','AMGN','ANTM','MDT','CINF','ICE','IVZ','CDW','CDNS')
+        detalle <- c(38,46,55,73,36,43,53,80,59,47,41,58,67,53,52,29,82,77,61,54,36,30,25,29,35,50,7,25)
+        datos<- data.frame(Empresa = orden, cantidad = detalle)
+        plot_ly(datos, labels = ~Empresa, values = ~cantidad, type = "pie")
+    })
+    
+    output$bar <- renderPlotly({
+        
+        ggplot(dataP, aes(x=Tickers, y=Gain...1))+
+            geom_bar(stat = "identity", fill = ifelse(dataP$Gain...1 > 0, "seagreen4", "orangered1"))+
+            ylab('Gains')+
+            theme(axis.text.x = element_text(angle=80, vjust = 0.5))
+    })
 })
