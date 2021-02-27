@@ -39,10 +39,6 @@ shinyServer(function(input, output) {
         fig
     })
     
-    observe({
-        print(input$dates[1])
-    })
-    
     output$table <- renderDataTable({
         ts <- read.csv("data/Transactions.csv")
         ts$Date <- as.Date(ts$Date, "%m/%d/%Y")
