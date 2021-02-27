@@ -7,4 +7,4 @@ library(ggplot2)
 library(shinyWidgets)
 library(quantmod) 
 
-dataP <- read.csv("data/Positions.csv")
+source('scripts/data_treatment.R')

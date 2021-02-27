@@ -21,7 +21,6 @@ shinyUI(dashboardPage(
     )),
     dashboardBody(tabItems(
         tabItem(tabName = 'intro',
-                # h1('Aqui ira mi intro')
                 includeCSS('www/html/css/style.css'),
                 includeHTML('www/html/intro.html')
                 
@@ -79,19 +78,15 @@ shinyUI(dashboardPage(
                 column(
                     8,
                     box(
-                        #status = 'danger',
                         solidHeader = TRUE,
                         width = 12 ,
-                        #height= 550,
                         collapsible = FALSE,
                         collapsed = FALSE,
                         tabBox(
                             id = 'tabset1',
-                            #height = "250px",
                             width = 12,
-                            tabPanel('Distribution',h4 ("Quantity Shares acquired by the Company",align = "center", style ="font-weight:bold"), plotlyOutput("just")),
-                            #tabPanel('Magic', textOutput('lol')),
-                            tabPanel('Performance', h4 ("Performance by Company", align = "center", style ="font-weight:bold"), plotlyOutput("bar"))
+                            tabPanel('Distribution',h4 ("Quantity Shares acquired by the Company",align = "center", style ="font-weight:bold"), plotlyOutput("distributionPlot")),
+                            tabPanel('Performance', h4 ("Performance by Company", align = "center", style ="font-weight:bold"), plotlyOutput("performancePlot"))
                         )
                     )
                 ))),
@@ -103,7 +98,7 @@ shinyUI(dashboardPage(
                         status = "primary",
                         width = 13,
                         pickerInput(
-                            inputId = "Id085",
+                            inputId = "stockPicker",
                             label = "Lista de Titulos",
                             choices = unique(dataP$Tickers),
                             options = list(size = 5)
@@ -123,7 +118,7 @@ shinyUI(dashboardPage(
                         title = 'Portfolio Information',
                         status = "success",
                         width = 13,
-                        htmlOutput('pTest')
+                        htmlOutput('portfolioStockDataHtml')
                     )
                 ),
                 column(
@@ -145,7 +140,7 @@ shinyUI(dashboardPage(
                                      )
                                  ),
                                  column(2)),
-                        plotlyOutput("plot", height = 250)
+                        plotlyOutput("stockMarketPlot", height = 250)
                     ),
                     box(
                         title = "Transactions",
@@ -153,7 +148,7 @@ shinyUI(dashboardPage(
                         solidHeader = TRUE,
                         collapsible = TRUE,
                         width = 20,
-                        dataTableOutput("table")
+                        dataTableOutput("stockTransactionsTable")
                     ))
                 ))
     ))

@@ -59,28 +59,28 @@ body{
   background-color: #f2f2f2;
 }
 
-#pTest {
+#portfolioStockDataHtml {
   font-size: 15px;
 }
 
-#pTest table {
+#portfolioStockDataHtml table {
   border-collapse: collapse;
   border-spacing: 0;
   width: 100%;
   border: 1px solid #ddd;
 }
 
-#pTest th {
+#portfolioStockDataHtml th {
   text-align: left;
   padding: 16px;
 }
 
-#pTest td {
+#portfolioStockDataHtml td {
   text-align: left;
   padding: 16px;
 }
 
-#pTest tr:nth-child(even) {
+#portfolioStockDataHtml tr:nth-child(even) {
   background-color: #f2f2f2;
 }
 
