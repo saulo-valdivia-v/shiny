@@ -95,7 +95,7 @@ shinyUI(dashboardPage(
                         pickerInput(
                             inputId = "stockPicker",
                             label = "Securities",
-                            choices = unique(dataP$Tickers),
+                            choices = unique(dataPositions$Tickers),
                             options = list(size = 5)
                         ),
                     ),
